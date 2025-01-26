@@ -5,7 +5,6 @@ This repository contains a framework for performing power analysis in R, includi
 - **`power_analysis.R`**: A file with two functions:
   1. `power_analysis()`: Estimates power via Monte Carlo simulation.
   2. `binary_search()`: Finds the minimum sample size to achieve a desired power.
-
 - **Example Scripts** for specific scenarios:
   - Paired t-test
   - Two-sample t-test
@@ -18,18 +17,17 @@ This repository contains a framework for performing power analysis in R, includi
 
 The goal of this project is to provide a **flexible and extensible** way to compute the statistical power of a given test or model. You can plug in your own:
 
-1. **Data Generating Function** (`data_alt_fun`), which should simulate data under the alternative hypothesis.  
+1. **Data Generating Function** (`data_alt_fun`), which should simulate data under the alternative hypothesis.
 2. **P-Value Function** (`p_val_fun`), which should take the simulated data and compute the relevant p-value.
 
-These functions will then be used within `power_analysis()` to estimate the power for your model/test, and can be combined with `binary_search()` to find the sample size needed to attain a specific power threshold.
+These functions will then be used within `power_analysis()` to estimate the power for your model/test, and can be combined with `binary_search()` to find the sample size needed to attain a specific power.
 
 ---
 
 ## Repository Contents
 
-- **`R/power_analysis.R`**:  
+- **`R/power_analysis.R`**:
   Contains the `power_analysis()` and `binary_search()` functions.
-
 - **Example Scripts**:
   - **`example_paired_ttest.R`**: Demonstrates how to do a power analysis for a paired t-test scenario.
   - **`example_two_sample_ttest.R`**: Demonstrates power analysis for a two-sample t-test.
@@ -81,14 +79,14 @@ print(res_wmw)
 
 The output from `binary_search()` is a data frame with:
 
-- **`power`**: the estimated power at the found sample size  
-- **`sample_size`**: the smallest sample size per group needed to achieve that power  
+- **`power`**: the estimated power at the found sample size
+- **`sample_size`**: the smallest sample size per group needed to achieve that power
 
 ---
 
 ## Advanced Prompt for Generating Your Own Data and P-Value Functions
 
-If you need a **custom** statistical model, you can use the following **highly detailed** prompt to instruct ChatGPT (or another LLM) to generate your `data_alt_fun` and `p_val_fun`. This prompt uses **prompt engineering** techniques to ensure clarity and completeness:
+If you need a **custom** statistical model, you can use the following **highly detailed** prompt to instruct ChatGPT (or another LLM) to generate your `data_alt_fun` and `p_val_fun`. 
 
 ```markdown
 ## Prompt Title: "Generate R Functions for Power Analysis Pipeline"
@@ -105,7 +103,7 @@ If you need a **custom** statistical model, you can use the following **highly d
 1. **Context**: I have a statistical model described as follows:
 
    - **Model Description**:  
-     <PUT YOUR MODEL SPECIFICATION HERE — e.g., “Two independent normal distributions with different means and a common standard deviation” or “A logistic regression model with certain coefficients,” etc.>  
+     <PUT YOUR MODEL SPECIFICATION HERE — e.g., “Two independent normal distributions with different means and a common standard deviation” or “A logistic regression model with certain coefficients”>
 
    - **Alternative Hypothesis**:  
      <DESCRIBE THE ALTERNATIVE — e.g., a specific difference in means, a certain effect size, or a parametric form you assume under H1.>
@@ -114,7 +112,7 @@ If you need a **custom** statistical model, you can use the following **highly d
      <LIST ALL RELEVANT PARAMETERS — e.g., mean_diff, sd, correlation, slope, intercept, etc. — that you want to pass into the function.>
 
 2. **Required Functions**: I need two R functions that will be **compatible** with an existing power-analysis framework. The framework calls:
-   - `data_alt_fun(sample_size, seed, <OTHER PARAMETERS>)`  
+   - `data_alt_fun(sample_size, seed, <OTHER PARAMETERS>)`
    - `p_val_fun(dataset)`
 
    **Important**: 
@@ -143,7 +141,7 @@ If you need a **custom** statistical model, you can use the following **highly d
      data_alt_fun <- function(sample_size, seed = NULL, ...)
      p_val_fun <- function(dataset)
      ```
-   - Replace `...` with any specific parameter names you need.  
+   - Replace `...` with any specific parameter names you need.
    - The code must run on standard R installations without additional packages (unless absolutely required for your model, in which case you must specify those packages clearly).
 
 5. **Example Usage** (just an illustration):  
@@ -162,7 +160,7 @@ If you need a **custom** statistical model, you can use the following **highly d
 **End of User Instructions.**
 ```
 
-Using this **advanced prompt**, you can precisely instruct ChatGPT to produce the `data_alt_fun` and `p_val_fun` functions for your custom model. Once you have them, you can integrate them into your power-analysis workflow by calling `power_analysis()` or `binary_search()`, just like in the examples provided above.
+Using this **advanced prompt**, you can precisely instruct ChatGPT to produce the `data_alt_fun` and `p_val_fun` functions for your custom model. Once you have them, you can integrate them into your power analysis pipeline.
 
 ---
 
@@ -176,3 +174,6 @@ Contributions and suggestions are welcome! If you have a new example or a genera
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+---
+
+This improved version enhances readability with clear sectioning, concise instructions, and consistent formatting.
