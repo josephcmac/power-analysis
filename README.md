@@ -13,6 +13,8 @@ This repository contains a framework for performing power analysis in R, includi
   - Wilcoxon Mann–Whitney test
   - …and more
 
+---
+
 ## Overview
 
 The goal of this project is to provide a **flexible and extensible** way to compute the statistical power of a given test or model. You can plug in your own:
@@ -22,13 +24,19 @@ The goal of this project is to provide a **flexible and extensible** way to comp
 
 These functions will then be used within `power_analysis()` to estimate the power for your model/test, and can be combined with `binary_search()` to find the sample size needed to attain a specific power threshold.
 
+---
+
 ## Repository Contents
 
-- **`R/power_analysis.R`**: Contains the `power_analysis()` and `binary_search()` functions.  
+- **`R/power_analysis.R`**:  
+  Contains the `power_analysis()` and `binary_search()` functions.
+
 - **Example Scripts**:
   - **`example_paired_ttest.R`**: Demonstrates how to do a power analysis for a paired t-test scenario.
   - **`example_two_sample_ttest.R`**: Demonstrates power analysis for a two-sample t-test.
   - **`example_wilcoxon.R`**: Shows how to handle the Wilcoxon–Mann–Whitney test with a desired \(\text{Pr}(X>Y)\).
+
+---
 
 ## Usage
 
@@ -40,6 +48,8 @@ These functions will then be used within `power_analysis()` to estimate the powe
    ```
 4. **Define** your own `data_alt_fun` and `p_val_fun` or use the ones in the examples.
 5. **Call** either `power_analysis()` directly or use `binary_search()` to find the smallest sample size for the desired power.
+
+---
 
 ## Example: Wilcoxon Mann–Whitney
 
@@ -70,9 +80,15 @@ res_wmw <- binary_search(
 print(res_wmw)
 ```
 
+The output from `binary_search()` is a data frame with:
+- **`power`**: the estimated power at the found sample size, 
+- **`sample_size`**: the smallest sample size per group needed to achieve that power.
+
+---
+
 ## Advanced Prompt for Generating Your Own Data and P-Value Functions
 
-If you need a **custom** statistical model, below is a **detailed and explicit** prompt for ChatGPT (or similar LLM) that uses advanced prompt-engineering techniques to ensure you get precisely the R code you need.
+If you need a **custom** statistical model, you can use the following **highly detailed** prompt to instruct ChatGPT (or another LLM) to generate your `data_alt_fun` and `p_val_fun`. This prompt uses **prompt engineering** techniques to ensure clarity and completeness:
 
 ```markdown
 ## Prompt Title: "Generate R Functions for Power Analysis Pipeline"
@@ -89,7 +105,7 @@ If you need a **custom** statistical model, below is a **detailed and explicit**
 1. **Context**: I have a statistical model described as follows:
 
    - **Model Description**:  
-     <PUT YOUR MODEL SPECIFICATION HERE — e.g., “Two independent normal distributions with different means and a common standard deviation,” or “A logistic regression model with certain coefficients,” etc.>  
+     <PUT YOUR MODEL SPECIFICATION HERE — e.g., “Two independent normal distributions with different means and a common standard deviation” or “A logistic regression model with certain coefficients,” etc.>  
 
    - **Alternative Hypothesis**:  
      <DESCRIBE THE ALTERNATIVE — e.g., a specific difference in means, a certain effect size, or a parametric form you assume under H1.>
@@ -116,7 +132,7 @@ If you need a **custom** statistical model, below is a **detailed and explicit**
      - Return only the **p-value** of that test as a numeric value (i.e., a single numeric).
 
 3. **Formatting and Documentation**:
-   - Please provide each function in its own **R code block** (using triple backticks for proper formatting in Markdown).
+   - Provide each function in its own **R code block**.
    - At the **top** of each function’s code block, add a short comment describing what it does and how it relates to the statistical model.
    - Include **inline comments** or docstrings as needed so that the code is self-explanatory.
 
@@ -144,25 +160,18 @@ If you need a **custom** statistical model, below is a **detailed and explicit**
    - **Stop** after showing these two code blocks; do not add extra commentary or call the functions.
    - If relevant, mention which R package(s) might be required (e.g., `MASS` for multivariate normal), but keep dependencies minimal.
 
-**Important**: The final output must be **R code** that is consistent, correct, well-documented, and ready to integrate into a power-analysis pipeline like this:
-```r
-result <- power_analysis(
-  sample_size   = N,
-  data_alt_fun  = data_alt_fun,
-  p_val_fun     = p_val_fun,
-  n_samples     = 1000,
-  alpha_level   = 0.05
-)
-```
-
 **End of User Instructions.**
 ```
 
-Use this prompt verbatim (or with slight adaptations for your specific model) in ChatGPT to generate `data_alt_fun` and `p_val_fun`. You’ll get two R functions tailored to your scenario, guaranteed to be **compatible** with the `power_analysis()` routine in this repository.
+Using this **advanced prompt**, you can precisely instruct ChatGPT to produce the `data_alt_fun` and `p_val_fun` functions for your custom model. Once you have them, you can integrate them into your power-analysis workflow by calling `power_analysis()` or `binary_search()`, just like in the examples provided above.
+
+---
 
 ## Contributing
 
-Contributions and suggestions are welcome! If you have a new example or general improvement, feel free to open an issue or submit a pull request.
+Contributions and suggestions are welcome! If you have a new example or a general improvement, feel free to open an issue or submit a pull request.
+
+---
 
 ## License
 
