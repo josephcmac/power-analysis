@@ -1,4 +1,3 @@
-```markdown
 # Power Analysis in R for Custom Hypotheses
 
 This repository contains a framework for performing power analysis in R, including:
@@ -177,4 +176,4 @@ Contributions and suggestions are welcome! If you have a new example or a genera
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-```
+
