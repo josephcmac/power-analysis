@@ -88,7 +88,7 @@ The output from `binary_search()` is a data frame with:
 
 If you need a **custom** statistical model, you can use the following **highly detailed** prompt to instruct ChatGPT (or another LLM) to generate your `data_alt_fun` and `p_val_fun`. 
 
-## Prompt Title: "Generate R Functions for Power Analysis Pipeline"
+### Prompt Title: "Generate R Functions for Power Analysis Pipeline"
 
 **System / Role Instructions:**
 - You are ChatGPT, a top-tier data scientist and statistician with expertise in R, statistical modeling, and power analysis.
