@@ -6,7 +6,7 @@
 #'
 #' @param sample_size Integer. Sample size for the simulated dataset.
 #' @param data_alt_fun A function that generates synthetic data under the alternative.
-#'   Must accept arguments \code{sample_size} and \code{seed}.
+#'   Must accept argument \code{sample_size}.
 #' @param p_val_fun A function that computes the p-value from a dataset 
 #'   (for example, from a fitted model).
 #' @param n_samples Integer. Number of Monte Carlo replications.
@@ -25,7 +25,7 @@
 #'   sample_size   = 30,
 #'   data_alt_fun  = data_alt_fun,
 #'   p_val_fun     = p_val_fun,
-#'   n_samples     = 1000,
+#'   n_samples     = 100000,
 #'   alpha_level   = 0.05
 #' )
 #' }
@@ -34,7 +34,7 @@
 power_analysis <- function(sample_size,
                            data_alt_fun,
                            p_val_fun,
-                           n_samples   = 1000,
+                           n_samples   = 100000,
                            alpha_level = 0.05) {
   # --- Input Validation --- #
   stopifnot(
@@ -92,7 +92,7 @@ power_analysis <- function(sample_size,
 #'   sample_size_min  = 4,
 #'   sample_size_max  = 500,
 #'   power_threshold  = 0.8,
-#'   n_samples        = 5000,
+#'   n_samples        = 100000,
 #'   alpha_level      = 0.05,
 #'   p_val_fun        = p_val_fun
 #' )
@@ -105,7 +105,7 @@ binary_search <- function(data_alt_fun,
                           sample_size_min,
                           sample_size_max,
                           power_threshold = 0.8,
-                          n_samples       = 5000,
+                          n_samples       = 100000,
                           alpha_level     = 0.05,
                           p_val_fun) {
   # --- Input Validation --- #

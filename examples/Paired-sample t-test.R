@@ -1,11 +1,4 @@
-# 1) Load existing code for power analysis
 source("../R/power_analysis.R")  # adjust path as needed
-
-# 2) Load MASS if you need correlation-based generation
-if (!requireNamespace("MASS", quietly = TRUE)) {
-  install.packages("MASS")
-}
-library(MASS)
 
 data_alt_paired <- function(
     sample_size,
@@ -67,7 +60,7 @@ res1 <- binary_search(
   sample_size_min    = 4,
   sample_size_max    = 300,
   power_threshold    = 0.80,
-  n_samples          = 10000,
+  n_samples          = 100000,
   alpha_level        = 0.05,
   p_val_fun          = p_val_paired
 )
