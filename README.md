@@ -19,7 +19,7 @@ This repository contains a framework for performing power analysis in R, includi
 
 The goal of this project is to provide a **flexible and extensible** way to compute the statistical power of a given test or model. You can plug in your own:
 
-1. **Data Generating Function** (`data_alt_fun`), which should simulate data under the alternative hypothesis.
+1. **Data Generating Function** (`data_alt_fun`), which should simulate data under the alternative hypothesis.  
 2. **P-Value Function** (`p_val_fun`), which should take the simulated data and compute the relevant p-value.
 
 These functions will then be used within `power_analysis()` to estimate the power for your model/test, and can be combined with `binary_search()` to find the sample size needed to attain a specific power threshold.
@@ -81,8 +81,9 @@ print(res_wmw)
 ```
 
 The output from `binary_search()` is a data frame with:
-- **`power`**: the estimated power at the found sample size, 
-- **`sample_size`**: the smallest sample size per group needed to achieve that power.
+
+- **`power`**: the estimated power at the found sample size  
+- **`sample_size`**: the smallest sample size per group needed to achieve that power  
 
 ---
 
