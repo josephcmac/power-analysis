@@ -147,13 +147,12 @@ If you need a **custom** statistical model, you can use the following **highly d
    - The code must run on standard R installations without additional packages (unless absolutely required for your model, in which case you must specify those packages clearly).
 
 5. **Example Usage** (just an illustration):  
-   ```r
+   
    # Example usage after your code is defined:
    set.seed(123)
    my_data <- data_alt_fun(sample_size = 30, seed = 1, mean_diff = 2, sd = 1)
    my_p    <- p_val_fun(my_data)
    my_p
-   ```
 
 6. **Final Instructions**:
    - Present only the **two** functions (`data_alt_fun` and `p_val_fun`) and **brief** explanatory text. 
