@@ -1,3 +1,4 @@
+```markdown
 # Power Analysis in R for Custom Hypotheses
 
 This repository contains a framework for performing power analysis in R, including:
@@ -69,34 +70,95 @@ res_wmw <- binary_search(
 print(res_wmw)
 ```
 
-## Prompt for Generating Your Own Data and P-Value Functions
+## Advanced Prompt for Generating Your Own Data and P-Value Functions
 
-If you need a **custom** statistical model, you can use ChatGPT (or a similar Large Language Model) to generate tailored R functions. Below is a generic prompt you can copy, paste, and adapt for ChatGPT:
+If you need a **custom** statistical model, below is a **detailed and explicit** prompt for ChatGPT (or similar LLM) that uses advanced prompt-engineering techniques to ensure you get precisely the R code you need.
 
----
+```markdown
+## Prompt Title: "Generate R Functions for Power Analysis Pipeline"
 
-> **Prompt**  
->  
-> I have a statistical model described as follows:  
->  
-> **\<MODEL SPECIFICATION HERE\>**  
->  
-> I want you to write two R functions in code blocks:  
->  
-> 1. A function named `data_alt_fun` that takes:  
->    - `sample_size` (integer, the number of observations to generate),  
->    - `seed` (integer or NULL for reproducibility),  
->    - **any other relevant parameters** for this model, e.g. `<PARAMETERS>`.  
->  
->    This function should set the seed if provided (e.g., `if (!is.null(seed)) set.seed(seed)`) and then generate random data **under the alternative hypothesis** of the specified model. It should return a data frame (or list) containing all relevant columns for subsequent analysis.  
->  
-> 2. A function named `p_val_fun` that accepts a dataset (the output from `data_alt_fun`) and returns the **p-value** from an appropriate statistical test. For example, if it is a two-sample scenario, you might use `t.test()`, `wilcox.test()`, or a custom likelihood ratio test—whatever is appropriate for **\<MODEL SPECIFICATION\>**.  
->  
-> Please provide the R code for both functions, clearly labeled, and include brief explanations where needed. Make sure both functions line up with the **\<MODEL SPECIFICATION\>** and **\<PARAMETERS\>** I’ve described and that they’ll be compatible with a typical power-analysis routine expecting `data_alt_fun(sample_size, seed, ...)` and `p_val_fun(dataset)`.
+**System / Role Instructions (for the LLM):**
+- You are ChatGPT, a top-tier data scientist and statistician with expertise in R, statistical modeling, and power analysis.
+- Your goal is to produce high-quality R code that precisely meets the user’s specifications.
+- You will strictly follow the user instructions below.
 
 ---
 
-**Note**: Replace **\<MODEL SPECIFICATION\>** and **\<PARAMETERS\>** with the actual details of your analysis (e.g., distributions, means, variances, correlation structures, etc.). ChatGPT will then produce custom R code for your scenario, which you can incorporate into your power analysis pipeline.
+**User Instructions:**
+
+1. **Context**: I have a statistical model described as follows:
+
+   - **Model Description**:  
+     <PUT YOUR MODEL SPECIFICATION HERE — e.g., “Two independent normal distributions with different means and a common standard deviation,” or “A logistic regression model with certain coefficients,” etc.>  
+
+   - **Alternative Hypothesis**:  
+     <DESCRIBE THE ALTERNATIVE — e.g., a specific difference in means, a certain effect size, or a parametric form you assume under H1.>
+
+   - **Parameters**:  
+     <LIST ALL RELEVANT PARAMETERS — e.g., mean_diff, sd, correlation, slope, intercept, etc. — that you want to pass into the function.>
+
+2. **Required Functions**: I need two R functions that will be **compatible** with an existing power-analysis framework. The framework calls:
+   - `data_alt_fun(sample_size, seed, <OTHER PARAMETERS>)`  
+   - `p_val_fun(dataset)`
+
+   **Important**: 
+   - The function **`data_alt_fun`** must:
+     - Accept `sample_size` (integer).
+     - Accept `seed` (integer or NULL).
+     - Accept **any other relevant model parameters** needed for data generation under the alternative.
+     - Internally set the random seed if `seed` is provided (e.g., `if (!is.null(seed)) set.seed(seed)`).
+     - Generate a dataset representing one replicate under the alternative hypothesis.
+     - Return that dataset in a format suitable for subsequent analysis (preferably a data frame with informative column names).
+
+   - The function **`p_val_fun`** must:
+     - Accept the dataset returned by `data_alt_fun`.
+     - Perform the appropriate statistical test that corresponds to the model specification (e.g., `t.test`, `wilcox.test`, a likelihood ratio test, etc.).
+     - Return only the **p-value** of that test as a numeric value (i.e., a single numeric).
+
+3. **Formatting and Documentation**:
+   - Please provide each function in its own **R code block** (using triple backticks for proper formatting in Markdown).
+   - At the **top** of each function’s code block, add a short comment describing what it does and how it relates to the statistical model.
+   - Include **inline comments** or docstrings as needed so that the code is self-explanatory.
+
+4. **Output Requirements**:
+   - Do **not** wrap these functions inside any other function; they should be standalone.
+   - Ensure the function signatures exactly match the required forms:
+     ```r
+     data_alt_fun <- function(sample_size, seed = NULL, ...)
+     p_val_fun <- function(dataset)
+     ```
+   - Replace `...` with any specific parameter names you need.  
+   - The code must run on standard R installations without additional packages (unless absolutely required for your model, in which case you must specify those packages clearly).
+
+5. **Example Usage** (just an illustration):  
+   ```r
+   # Example usage after your code is defined:
+   set.seed(123)
+   my_data <- data_alt_fun(sample_size = 30, seed = 1, mean_diff = 2, sd = 1)
+   my_p    <- p_val_fun(my_data)
+   my_p
+   ```
+
+6. **Final Instructions**:
+   - Present only the **two** functions (`data_alt_fun` and `p_val_fun`) and **brief** explanatory text. 
+   - **Stop** after showing these two code blocks; do not add extra commentary or call the functions.
+   - If relevant, mention which R package(s) might be required (e.g., `MASS` for multivariate normal), but keep dependencies minimal.
+
+**Important**: The final output must be **R code** that is consistent, correct, well-documented, and ready to integrate into a power-analysis pipeline like this:
+```r
+result <- power_analysis(
+  sample_size   = N,
+  data_alt_fun  = data_alt_fun,
+  p_val_fun     = p_val_fun,
+  n_samples     = 1000,
+  alpha_level   = 0.05
+)
+```
+
+**End of User Instructions.**
+```
+
+Use this prompt verbatim (or with slight adaptations for your specific model) in ChatGPT to generate `data_alt_fun` and `p_val_fun`. You’ll get two R functions tailored to your scenario, guaranteed to be **compatible** with the `power_analysis()` routine in this repository.
 
 ## Contributing
 
@@ -105,3 +167,4 @@ Contributions and suggestions are welcome! If you have a new example or general 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+```
