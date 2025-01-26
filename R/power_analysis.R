@@ -18,6 +18,9 @@
 #' @examples
 #' \dontrun{
 #' # Example usage:
+#' # data_alt_fun should be a function that takes (sample_size, seed) and returns data.
+#' # p_val_fun should be a function that takes a dataset and returns a numeric p-value.
+#'
 #' res <- power_analysis(
 #'   sample_size   = 30,
 #'   data_alt_fun  = data_alt_fun,
@@ -33,7 +36,7 @@ power_analysis <- function(sample_size,
                            p_val_fun,
                            n_samples   = 1000,
                            alpha_level = 0.05) {
-  #--- Input Validation ---#
+  # --- Input Validation --- #
   stopifnot(
     is.numeric(sample_size), length(sample_size) == 1L, sample_size > 0,
     is.function(data_alt_fun),
@@ -43,22 +46,20 @@ power_analysis <- function(sample_size,
     alpha_level > 0, alpha_level < 1
   )
   
-  #--- Monte Carlo simulation ---#
+  # --- Monte Carlo simulation --- #
   p_values <- vapply(
     X = seq_len(n_samples),
     FUN = function(i) {
-      set.seed(i)
-      data_sim <- data_alt_fun(sample_size = sample_size)
+      # Pass the iteration index as the seed so data_alt_fun can set.seed internally
+      data_sim <- data_alt_fun(sample_size = sample_size, seed = i)
       p_val_fun(data_sim)
     },
     FUN.VALUE = numeric(1L)
   )
   
-  
-  #--- Compute empirical power ---#
+  # --- Compute empirical power --- #
   mean(p_values < alpha_level)
 }
-
 
 #' @title Binary Search for Minimum Sample Size
 #'
@@ -67,6 +68,7 @@ power_analysis <- function(sample_size,
 #' for which the statistical power meets or exceeds the specified threshold.
 #'
 #' @param data_alt_fun A function that generates synthetic data under the alternative.
+#'   Must accept arguments \code{sample_size} and \code{seed}.
 #' @param power_analysis_fun The function that estimates the statistical power (default: \code{power_analysis}).
 #' @param sample_size_min Integer. Lower bound of the search range for sample size.
 #' @param sample_size_max Integer. Upper bound of the search range for sample size.
@@ -75,13 +77,16 @@ power_analysis <- function(sample_size,
 #' @param alpha_level Numeric. Significance level for the test (default: 0.05).
 #' @param p_val_fun A function that computes the p-value from a dataset (e.g., \code{p_val_fun}).
 #'
-#' @return A data.frame with two columns:
+#' @return A data frame with two columns:
 #'   \code{power} (the estimated power) and 
 #'   \code{sample_size} (the smallest sample size achieving that power).
 #'
 #' @examples
 #' \dontrun{
 #' # Example usage:
+#' # data_alt_fun must accept (sample_size, seed). 
+#' # p_val_fun is a function taking a data set and returning a p-value.
+#'
 #' res <- binary_search(
 #'   data_alt_fun     = data_alt_fun,
 #'   sample_size_min  = 4,
@@ -100,10 +105,10 @@ binary_search <- function(data_alt_fun,
                           sample_size_min,
                           sample_size_max,
                           power_threshold = 0.8,
-                          n_samples = 5000,
-                          alpha_level = 0.05,
+                          n_samples       = 5000,
+                          alpha_level     = 0.05,
                           p_val_fun) {
-  #--- Input Validation ---#
+  # --- Input Validation --- #
   stopifnot(
     is.function(data_alt_fun),
     is.function(power_analysis_fun),
@@ -136,7 +141,7 @@ binary_search <- function(data_alt_fun,
     pwr
   }
   
-  #-- 1) Quick checks at boundaries --
+  # --- 1) Check boundaries quickly --- #
   power_min <- get_power(sample_size_min)
   if (power_min >= power_threshold) {
     return(data.frame(power = power_min, sample_size = sample_size_min))
@@ -144,11 +149,11 @@ binary_search <- function(data_alt_fun,
   
   power_max <- get_power(sample_size_max)
   if (power_max < power_threshold) {
-    warning("Threshold not reached, even at sample_size_max.")
+    warning("Threshold not reached even at sample_size_max.")
     return(data.frame(power = power_max, sample_size = sample_size_max))
   }
   
-  #-- 2) Binary search loop --
+  # --- 2) Binary search loop --- #
   low  <- sample_size_min
   high <- sample_size_max
   
@@ -166,5 +171,3 @@ binary_search <- function(data_alt_fun,
   final_power <- get_power(low)
   data.frame(power = final_power, sample_size = low)
 }
-
-
