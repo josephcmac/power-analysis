@@ -18,7 +18,7 @@ This repository contains a framework for performing power analysis in R, includi
 The goal of this project is to provide a **flexible and extensible** way to compute the statistical power of a given test or model. You can plug in your own:
 
 1. **Data Generating Function** (`data_alt_fun`), which should simulate data under the alternative hypothesis.
-2. **P-Value Function** (`p_val_fun`), which should take the simulated data and compute the relevant p-value.
+2. **P-Value Function** (`p_val_fun`), which should take the simulated data and compute the p-value that the data corresponds to the null hypothesis.
 
 These functions will then be used within `power_analysis()` to estimate the power for your model/test, and can be combined with `binary_search()` to find the sample size needed to attain a specific power.
 
@@ -31,7 +31,7 @@ These functions will then be used within `power_analysis()` to estimate the powe
 - **Example Scripts**:
   - **`example_paired_ttest.R`**: Demonstrates how to do a power analysis for a paired t-test scenario.
   - **`example_two_sample_ttest.R`**: Demonstrates power analysis for a two-sample t-test.
-  - **`example_wilcoxon.R`**: Shows how to handle the Wilcoxon–Mann–Whitney test with a desired \(\text{Pr}(X>Y)\).
+  - **`example_wilcoxon.R`**: Shows how to handle the Wilcoxon–Mann–Whitney test with a desired Pr(X>Y).
 
 ---
 
@@ -48,33 +48,54 @@ These functions will then be used within `power_analysis()` to estimate the powe
 
 ---
 
-## Example: Wilcoxon Mann–Whitney
-
+## Example: Two-sample t-test.R 
 ```r
-# Example usage for Wilcoxon with P(X>Y) = 0.76
-source("R/power_analysis.R")  # loads power_analysis() and binary_search()
+source("../R/power_analysis.R")
 
-# Suppose we define data_alt_wilcoxon() and p_val_wilcoxon() in example_wilcoxon.R
-source("examples/example_wilcoxon.R")
+data_alt_two_sample <- function(
+    sample_size,
+    mean_diff = 0,   # Difference in means (Group2 - Group1)
+    sd        = 1,   # Standard deviation in both groups
+    seed      = NULL
+) {
+  # Optionally set the seed for reproducibility
+  if (!is.null(seed)) set.seed(seed)
+  
+  # Group 1: Mean = 0,   SD = sd
+  # Group 2: Mean = mean_diff, SD = sd
+  x <- rnorm(sample_size, mean = 0,         sd = sd)
+  y <- rnorm(sample_size, mean = mean_diff, sd = sd)
+  
+  data.frame(group1 = x, group2 = y)
+}
 
-res_wmw <- binary_search(
-  data_alt_fun      = function(sample_size, seed = NULL) {
-    data_alt_wilcoxon(
+p_val_two_sample <- function(dataset) {
+  test_out <- t.test(dataset$group1, dataset$group2, var.equal = TRUE)
+  test_out$p.value
+}
+
+# Example usage: find sample size to achieve 80% power
+# for a two-sample t-test (mean_diff = 1, sd = 2).
+
+res_two_sample <- binary_search(
+  data_alt_fun = function(sample_size, seed = NULL) {
+    data_alt_two_sample(
       sample_size = sample_size,
-      p_gt        = 0.76,
+      mean_diff   = 1,
+      sd          = 2,
       seed        = seed
     )
   },
   power_analysis_fun = power_analysis,
-  sample_size_min    = 4,
-  sample_size_max    = 500,
-  power_threshold    = 0.80,
-  n_samples          = 10000,
-  alpha_level        = 0.05,
-  p_val_fun          = p_val_wilcoxon
+  sample_size_min    = 4,       # lower bound to start searching
+  sample_size_max    = 300,     # upper bound
+  power_threshold    = 0.80,    # desired power
+  n_samples          = 100000,   # number of Monte Carlo simulations per power calc
+  alpha_level        = 0.05,    # significance level (two-sided)
+  p_val_fun          = p_val_two_sample
 )
 
-print(res_wmw)
+print(res_two_sample)
 ```
 
 The output from `binary_search()` is a data frame with:

@@ -1,4 +1,3 @@
-# Adjust the path as needed
 source("../R/power_analysis.R")
 
 data_alt_two_sample <- function(
@@ -19,10 +18,7 @@ data_alt_two_sample <- function(
 }
 
 p_val_two_sample <- function(dataset) {
-  # By default, t.test(x, y) in R does a two-sample, two-sided test
-  # with Welch's correction for unequal variances.
   test_out <- t.test(dataset$group1, dataset$group2, var.equal = TRUE)
-  
   test_out$p.value
 }
 
